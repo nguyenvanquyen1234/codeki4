@@ -1,0 +1,109 @@
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Danh sách đặt tour</h1>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-3">
+                <mat-form-field appearance="fill" style="width:200px; margin-right:12px;">
+                    <mat-label>Lọc theo trạng thái</mat-label>
+                    <mat-select (selectionChange)="filterByStatus($event.value)">
+                        <mat-option value="">Tất cả</mat-option>
+                        <mat-option value="upcoming">Chưa diễn ra</mat-option>
+                        <mat-option value="ongoing">Đang diễn ra</mat-option>
+                        <mat-option value="finished">Đã kết thúc</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Tìm kiếm</mat-label>
+                    <input matInput type="text" (keyup)="search($event)" />
+                </mat-form-field>
+            </div>
+
+            <button mat-raised-button color="primary" style="float: right;"
+                (click)="exporter.exportTable('csv', {fileName:'Danh sách đặt tour'})">Xuất Excel</button>
+            <table mat-table matTableExporter #exporter="matTableExporter" [hiddenColumns]="[7]" [dataSource]="listData"
+                matSort class="mat-elevation-z8">
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 9%;">Mã đặt chỗ</th>
+                    <td mat-cell *matCellDef="let row">{{row.orderId}}</td>
+
+                </ng-container>
+                <ng-container matColumnDef="imageTour">
+                    <th mat-header-cell *matHeaderCellDef style="width: 10%;">Ảnh tour</th>
+                    <td mat-cell *matCellDef="let row">
+                        <img [src]="row.tour.image" width="60px" class="p-1">
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="nameTour">
+                    <th mat-header-cell *matHeaderCellDef style="width: 10%;">Tên tour</th>
+                    <td mat-cell *matCellDef="let row">{{row.tour.name}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="email">
+
+                    <th mat-header-cell *matHeaderCellDef style="width: 10%;">Email</th>
+                    <td mat-cell *matCellDef="let row">{{row.email}}</td>
+                </ng-container>
+                <ng-container matColumnDef="phone">
+
+                    <th mat-header-cell *matHeaderCellDef style="width: 10%;">Số điện thoại</th>
+                    <td mat-cell *matCellDef="let row">{{row.phone}}</td>
+                </ng-container>
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef style="width: 10%;">Tổng tiền</th>
+                    <td mat-cell *matCellDef="let row">{{row.totalPrice}}</td>
+
+                </ng-container>
+                <ng-container matColumnDef="bookDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%;">Thời gian</th>
+                    <td mat-cell *matCellDef="let row">
+                        {{ row.orderTime | date:'dd/MM/yyyy HH:mm' }}
+                    </td>
+                </ng-container>
+                <mat-form-field>
+                    <mat-label>Lọc theo trạng thái</mat-label>
+                    <mat-select (selectionChange)="filterByStatus($event.value)">
+                        <mat-option value="">Tất cả</mat-option>
+                        <mat-option value="upcoming">Chưa diễn ra</mat-option>
+                        <mat-option value="ongoing">Đang diễn ra</mat-option>
+                        <mat-option value="finished">Đã kết thúc</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Trạng thái</th>
+                    <td mat-cell *matCellDef="let row">
+                        <span [ngStyle]="{'color': getStatusColor(row)}">
+                            {{ getStatus(row) }}
+                        </span>
+                    </td>
+                </ng-container>
+
+
+
+                <ng-container matColumnDef="view">
+                    <th mat-header-cell *matHeaderCellDef style="width:7%; text-align:center;">Kiểm tra</th>
+                    <td mat-cell *matCellDef="let row" style="text-align:center;">
+                        <button mat-icon-button color="primary" (click)="openDetail(row)">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+            </table>
+            <mat-paginator [length]="bookLength" showFirstLastButtons [pageSize]="12"
+                [pageSizeOptions]="[10, 12, 25, 50, 100]">
+            </mat-paginator>
+        </div>
+
+    </div>
+</div>
